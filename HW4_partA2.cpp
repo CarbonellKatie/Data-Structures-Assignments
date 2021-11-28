@@ -97,9 +97,11 @@ Node* insert(Node* root, Node* x) { // insert a node to a tree with root
         if (x->SID <= root->SID) {
 
             root->left = insert(root->left, x);
+            //root->left->parent = root;  //test
         }
         else {
             root->right = insert(root->right, x);
+            //root->right->parent = root; //test
         }
     }
 
@@ -135,6 +137,13 @@ Node* rotation_counterclock(Node* root) { // rotate tree at root counter clockwi
     return root;
 }
 
+Node* rotateRight(Node* root){
+    Node* newRoot = root->left;
+    root->left = newRoot->right;
+    newRoot->right = root;
+    return newRoot;
+}
+
 class AVL {
 
 public:
@@ -147,32 +156,33 @@ public:
 
     void AVL_Insert(Node* x){
         root = insert(root, x); //insert the new node and update root
-
         Node* focusNode = x;
-        int leftNodeHeight;
-        int rightNodeHeight;
 
-        while(focusNode != NULL){   //update the height of all of x's parents
-            if(focusNode->right == NULL) {
-                rightNodeHeight = -1;
-            }
-            else{
-                rightNodeHeight = focusNode->right->height;
-            }
-            if(focusNode->left == NULL){
-                leftNodeHeight = -1;
-            }
-            else{
-                leftNodeHeight = focusNode->left->height;
-            }
+        if(isRoot(focusNode)){ return; }
+        while(focusNode != nullptr){   //update the height of all of x's parents
 
-            focusNode->height = 1 + std::max(rightNodeHeight, leftNodeHeight);
-            focusNode->balanceFactor = focusNode->left->height - focusNode->right->height;
+            focusNode->height = updateHeight(focusNode);
+            focusNode->balanceFactor = getBalance(focusNode);
 
+            int balance = focusNode->balanceFactor;
             //if the node is now unbalanced, re-balance it
-            if(focusNode->balanceFactor > 1 || focusNode->balanceFactor < -1){
-                
-
+            if(balance > 1 ){  //left heavy tree
+                if(getBalance(focusNode->left) >= 0){   //if the tree is left heavy and if the left tree is left heavy
+                    focusNode = rotateRight(focusNode);
+                }
+                else{       //if it is the left right case
+                    focusNode->left = rotation_counterclock(root->left);
+                    focusNode = rotateRight(focusNode);
+                }
+            }
+            if(balance < -1){  //right heavy tree
+                if(getBalance(focusNode->right) <= 0){
+                    focusNode = rotation_counterclock(focusNode);
+                }
+                else{
+                    focusNode->right = rotateRight(focusNode->right);
+                    focusNode = rotation_counterclock(focusNode);
+                }
             }
             focusNode = focusNode->parent;  //update all parent's heights
         }
@@ -180,9 +190,38 @@ public:
 
         //update balances of all parent nodes
 
-
-
     } // insert a new node x into AVL tree
+
+    int getBalance(Node* focusNode){
+        if(focusNode == NULL){
+            return 0;
+        }
+        return (updateHeight(focusNode->left) - updateHeight(focusNode->right));
+        //return focusNode->left->height - focusNode->right->height;
+    }
+
+    int updateHeight(Node* focusNode){
+        if(focusNode == NULL){
+            return -1;
+        }
+        int leftNodeHeight;
+        int rightNodeHeight;
+
+        if(focusNode->right == NULL) {
+            rightNodeHeight = -1;
+        }
+        else{
+            rightNodeHeight = focusNode->right->height;
+        }
+        if(focusNode->left == NULL){
+            leftNodeHeight = -1;
+        }
+        else{
+            leftNodeHeight = focusNode->left->height;
+        }
+
+        return(1 + std::max(rightNodeHeight, leftNodeHeight));
+    }
 
 private:
 
@@ -191,7 +230,7 @@ private:
 
 
 
-void enumerate(Node* ptr);
+//void enumerate(Node* ptr);
 
 void AVL::AVL_Enumerate() {
 
