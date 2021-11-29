@@ -36,7 +36,7 @@ public:
             return;
         }
         int parentIndex = getParentIndex(keyIndex);
-        if(parentIndex < 0){
+        if(parentIndex < 0){        //if the Node has no parent, return
             return;
         }
         if (x[keyIndex] < x[parentIndex]) {  //if the key is less than its parent
@@ -45,7 +45,7 @@ public:
         rebalanceHeap(parentIndex);
     }
 
-    void swap(int index1, int index2){
+    void swap(int index1, int index2){      //helper method to swap two nodes
         int temp = x[index2];
         x[index2] = x[index1];
         x[index1] = temp;
@@ -66,17 +66,17 @@ public:
             }
         }
 
-        void removeAndShiftHeap(int currKey){       //currkey = 0
+        void removeAndShiftHeap(int focusNode){       //currkey = 0
 
-        int leftChildIdx = getLeftChildIndex(currKey);
-        int rightChildIdx = getRightChildIndex(currKey);
+        int leftChildIdx = getLeftChildIndex(focusNode);
+        int rightChildIdx = getRightChildIndex(focusNode);
 
             if(leftChildIdx > x.size() - 1 && rightChildIdx > x.size() - 1){    //if this is a leaf node
                 return;
             }
             else if(rightChildIdx > x.size() - 1) {  //if the node only has a left child
-                if (x[leftChildIdx] < x[currKey]) { //if left child is less than current key
-                    swap(currKey, leftChildIdx);    //swap the current key and the left child
+                if (x[leftChildIdx] < x[focusNode]) { //if left child is less than current key
+                    swap(focusNode, leftChildIdx);    //swap the current key and the left child
                     removeAndShiftHeap(leftChildIdx);   //current key is now at position leftChildIdx, call method again to continue to balance key
                 }
             }
@@ -89,21 +89,21 @@ public:
                 else{
                     minChildIndex = rightChildIdx;
                 }
-                if(x[minChildIndex] < x[currKey]){
-                    swap(minChildIndex, currKey);
-                    removeAndShiftHeap(minChildIndex);
+                if(x[minChildIndex] < x[focusNode]){  //if the smallest child of this node is less than the node, swap them
+                    swap(minChildIndex, focusNode);
+                    removeAndShiftHeap(minChildIndex);  //call the method on the focusNode again
                 }
             }
             return;
     }
 
-        int getParentIndex(int index) {
+        int getParentIndex(int index) {     //find the index of the parent of the Node at this index
             return (index - 1) / 2;
         }
-        int getRightChildIndex(int index) {
+        int getRightChildIndex(int index) {     //find the index of the right child of the Node at this index
             return 2 * index + 2;
         }
-        int getLeftChildIndex(int index) {
+        int getLeftChildIndex(int index) {      //find the index of the left child of the Node at this index
             return 2 * index + 1;
         }
 

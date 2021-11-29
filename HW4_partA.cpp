@@ -88,7 +88,7 @@ int isLeaf(Node* ptr) { // check if node is leaf or not
 
 Node* insert(Node* root, Node* x) { // insert a node to a tree with root
 
-    if (root == NULL) {
+    if (root == NULL) {     //if the tree is empty, insert the node as the root of the tree
 
         root = x;
     }
@@ -137,7 +137,7 @@ Node* rotation_counterclock(Node* root) { // rotate tree at root counter clockwi
     return root;
 }
 
-Node* rotateRight(Node* root){
+Node* rotateRight(Node* root){      //rotate the tree clockwise
     Node* newRoot = root->left;
     root->left = newRoot->right;
     newRoot->right = root;
@@ -201,26 +201,28 @@ public:
     }
 
     int updateHeight(Node* focusNode){
-        if(focusNode == NULL){
+        if(focusNode == NULL){      //height of a Null node is -1
             return -1;
         }
         int leftNodeHeight;
         int rightNodeHeight;
 
-        if(focusNode->right == NULL) {
+        if(focusNode->right == NULL) {  //null node = height of -1
             rightNodeHeight = -1;
         }
         else{
-            rightNodeHeight = focusNode->right->height;
+            rightNodeHeight = focusNode->right->height;     //if focusNode has a right child, find its height
         }
-        if(focusNode->left == NULL){
+        if(focusNode->left == NULL){    //repeat for left child
             leftNodeHeight = -1;
         }
         else{
             leftNodeHeight = focusNode->left->height;
         }
 
+        //height of focusNode is 1 greater than the height of its longest subtree
         return(1 + std::max(rightNodeHeight, leftNodeHeight));
+
     }
 
 private:
