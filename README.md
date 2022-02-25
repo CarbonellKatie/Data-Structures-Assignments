@@ -1,3 +1,3 @@
-# C-Assignment-1
+# Data Structures Assignments
 
 Implementing Various Data Structures in C++ (Data Structures & Algorithms Course Assignemnts)
